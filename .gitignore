@@ -1,0 +1,7 @@
+**/node_modules
+**/.idea
+**/dist
+**/*.log
+
+red-tetris-front/.nuxt
+red-tetris-front/.output

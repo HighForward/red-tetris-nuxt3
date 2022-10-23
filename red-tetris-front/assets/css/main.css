@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.listItem {
+    @apply px-2 hover:bg-_gray text-_light hover:text-_secondary rounded-lg;
+}
