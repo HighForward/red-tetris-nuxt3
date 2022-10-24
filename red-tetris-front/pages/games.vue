@@ -5,6 +5,10 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: ["web-socket"]
+})
+
 
 </script>
 

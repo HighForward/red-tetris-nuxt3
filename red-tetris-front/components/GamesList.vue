@@ -3,35 +3,35 @@
 import { useToast } from "vue-toastification";
 import { useGames } from "#imports";
 import { GameDTO } from "~/types/game.dto";
-import { useGame } from "~/composables/games";
+import { useHub } from "~/composables/hub";
+import { useGamesListeners } from "~/composables/games";
 
 let gameName: Ref<string> = ref('');
-let loaded = ref(false)
 
 let games = useGames()
-let game = useGame()
+let hub = useHub()
 
 const toast = useToast()
+useGamesListeners()
+
 const { $client } = useNuxtApp()
 
-
-onMounted(() => {
-  $client.emit("getGames", (game_list: GameDTO[]) => {
-    games.value = game_list
-    loaded.value = true
+function navigateToGame(game: GameDTO) {
+  hub.value = game
+  navigateTo({
+    path: '/hub',
+    query: {
+      uuid: game.uid
+    }
   })
-})
+}
 
 function joinGame(joined_game: GameDTO) {
 
-  $client.emit("joinGame", joined_game.uid, (ret: GameDTO) => {
-    game.value = joined_game
-    navigateTo({
-      path: '/hub',
-      query: {
-        uuid: joined_game.uid
-      }
-    })
+  $client.emit("joinGame", joined_game.uid, (game: GameDTO) => {
+    if (game) {
+      navigateToGame(game)
+    }
   })
 }
 
@@ -41,8 +41,11 @@ function createGame() {
     toast.error('You cannot create a game with this name')
     return
   }
+
   $client.emit('createGame', gameName.value, (game: GameDTO) => {
-    console.log(game)
+    if (game) {
+      navigateToGame(game)
+    }
   })
 }
 
@@ -50,10 +53,7 @@ function createGame() {
 
 <template>
   <div class="w-full">
-    <div class="mt-12 flex justify-center" v-if="loaded === false">
-      loading games...
-    </div>
-    <div v-else class="flex justify-center w-full font-semibold">
+    <div class="flex justify-center w-full font-semibold">
       <div class="mt-12 flex flex-row" style="width: 900px; box-shadow: 0px 0px 25px 5px rgba(0, 0, 0, 0.35);">
 
         <div class="gamesList flex flex-col flex-1 p-2 m-2 border rounded" style="border-color: #DDDDDD">
@@ -69,7 +69,7 @@ function createGame() {
                 </div>
 
                 <div class="flex items-center">
-                  <span>[{{ game.state }}]</span><span>&nbsp[{{ game.players?.length }}/8]</span>
+                  <span>[{{ game.state }}]</span><span>&nbsp[{{ game?.players?.length }}/8]</span>
                   <button @click="joinGame(game)" class="px-2 ml-2">rejoindre</button>
                 </div>
               </div>

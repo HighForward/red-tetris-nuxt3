@@ -4,10 +4,10 @@ import { WsUser } from "../decorators/ws.user";
 import { WsData } from "../decorators/ws-data.decorator";
 import { EventsServices } from "../events/events.services";
 import { SubscribeMessage, WebSocketGateway, WsException } from "@nestjs/websockets";
-import Player, { UserDTO } from "src/users/player";
+import Player, { PlayerDTO } from "src/players/player";
 import { GamesService } from "./games.service";
 import { Game, GameDTO } from "./game";
-import { PlayersService } from "../users/players.service";
+import { PlayersService } from "../players/players.service";
 
 @UseGuards(WsGuard)
 @WebSocketGateway(81,
@@ -59,5 +59,25 @@ export class GamesEventsGateway {
         this.logger.log(`player ${player.id} leave game ${player?.currentGame?.name}`)
         return this.gamesService.leaveGame(player)
     }
+
+    @SubscribeMessage('kickPlayer')
+    kickPlayer(@WsUser() player: Player, @WsData() player_id: string) : boolean {
+        this.logger.log(`player ${player.id} kick ${player_id} from game ${player?.currentGame?.name}`)
+        const target_player: Player = this.playersService.findOneById(player_id)
+        return this.gamesService.leaveGame(target_player)
+    }
+
+    @SubscribeMessage('sendMessage')
+    sendMessage(@WsUser() player: Player, @WsData() message: string) : boolean {
+        this.logger.log(`player ${player.id} send message to game ${player?.currentGame?.name}`)
+        return this.gamesService.sendMessage(player, message)
+    }
+
+    @SubscribeMessage('startGame')
+    startGame(@WsUser() player: Player) : boolean {
+        this.logger.log(`player ${player.id} start game ${player?.currentGame?.name}`)
+        return this.gamesService.startGame(player)
+    }
+
 
 }

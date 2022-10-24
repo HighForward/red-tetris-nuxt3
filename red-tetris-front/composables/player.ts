@@ -1,3 +1,7 @@
-import { PlayerDto } from "~/types/player.dto";
+import { PlayerDto, PlayerType } from "~/types/player.dto";
 
-export const usePlayer = () => useState<PlayerDto>('player', () => new Object)
+export const usePlayer = () => useState<PlayerDto>('player', () => ({
+    id: "",
+    username: "",
+    type: PlayerType.GUEST
+}))

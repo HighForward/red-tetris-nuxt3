@@ -1,4 +1,3 @@
-import { GameDTO } from "~/types/game.dto";
 
 export interface PlayerDto
 {

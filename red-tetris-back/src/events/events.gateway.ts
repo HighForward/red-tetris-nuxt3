@@ -13,8 +13,8 @@ import { EventsServices } from './events.services';
 import { WsUser } from "../decorators/ws.user";
 import { WsGuard } from 'src/guards/ws.guard';
 import { WsAllExceptionsFilter } from "../filters/ws-all-exception.filter";
-import Player from "../users/player";
-import { PlayersService } from "../users/players.service";
+import Player from "../players/player";
+import { PlayersService } from "../players/players.service";
 import { GamesService } from "../games/games.service";
 
 @WebSocketGateway(81,

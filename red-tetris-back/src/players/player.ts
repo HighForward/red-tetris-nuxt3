@@ -1,7 +1,7 @@
 import { Socket } from "socket.io";
 import { Game, GameDTO } from "../games/game";
 
-export interface UserDTO
+export interface PlayerDTO
 {
     id: string;
     username: string;
@@ -31,7 +31,7 @@ export default class Player {
         // this.currentBoard = null
     }
 
-    toDTO() : UserDTO
+    toDTO() : PlayerDTO
     {
         return {
             id: this.id,

@@ -1,5 +1,6 @@
-import Player, { UserDTO } from "../users/player";
+import Player, { PlayerDTO } from "../players/player";
 import { v4 as uuidv4 } from 'uuid';
+import { Board } from "../boards/board";
 
 export enum RoomState {
     WARMING = 'WARMING',
@@ -9,12 +10,24 @@ export enum RoomState {
 
 
 export interface GameDTO {
-    owner: UserDTO
-    players: UserDTO[]
+    owner: PlayerDTO
+    players: PlayerDTO[]
     state: RoomState
     name: string
     uid: string
     chat: string[]
+}
+
+const chatPrefix = (player?: Player) => {
+    const date = new Date()
+    const hour = date.getHours()
+    const minutes = date.getMinutes()
+
+    let prefix = `[${hour}:${minutes}] `
+
+    if (player)
+        prefix += `${player.username}: `
+    return prefix
 }
 
 export class Game {
@@ -25,16 +38,22 @@ export class Game {
     name: string = null
     uid: string
     chat: string[] = []
+    boards: Board[] = []
 
     // block_loop: number[] = []
-    // boards: Board[] = []
 
     constructor(owner: Player, lobby_name: string) {
         this.owner = owner
         this.name = lobby_name
         this.players.push(owner)
         this.uid = uuidv4()
-        // this.emitMsgToChat(`Création de la partie: '${lobby_name}'.`, owner)
+        this.boards = []
+        this.newMessage(`Create the game: '${lobby_name}'.`, owner)
+    }
+
+    addPlayer(player: Player) {
+        this.players.push(player)
+        this.newMessage(`${player.username} join the game`)
     }
 
     removePlayer(player: Player) {
@@ -47,13 +66,24 @@ export class Game {
             }
 
             player.currentGame = null
+            this.newMessage(`${player.username} left the game`,)
         }
+    }
+
+    newMessage(message: string, player?: Player) {
+        this.chat.push(chatPrefix(player) + message)
+    }
+
+
+    startGame() {
+
+
     }
 
     toDTO() : GameDTO
     {
         return {
-            players: this.players.map((player: Player) : UserDTO => { return player.toDTO() }),
+            players: this.players.map((player: Player) : PlayerDTO => { return player.toDTO() }),
             owner: this.owner.toDTO(),
             name: this.name,
             uid: this.uid,

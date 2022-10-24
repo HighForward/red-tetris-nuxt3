@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Game } from "./game";
-import Player from "../users/player";
+import Player from "../players/player";
 import { EventsServices } from "../events/events.services";
 
 @Injectable()
@@ -36,6 +36,12 @@ export class GamesService {
         return this.games
     }
 
+    emitPlayersMessage(game: Game, message: string, payload: any) {
+        game.players.forEach(player => {
+            player.socket.emit(message, payload)
+        })
+    }
+
     createGame(player: Player, game_name: string) {
         const new_game: Game = new Game(player, game_name)
         player.currentGame = new_game
@@ -47,30 +53,54 @@ export class GamesService {
 
     joinGame(player: Player, game: Game) {
         player.currentGame = game
-        game.players.push(player);
+        game.addPlayer(player)
         this.eventsServices.emitMessage("updateGame", game.toDTO())
+        this.emitPlayersMessage(game, "updateHub", game.toDTO())
         return game
     }
 
     leaveGame(player: Player) {
 
-        let game: Game = player.currentGame
+        let game: Game = player?.currentGame
 
         if (game) {
             game.removePlayer(player)
+
+            player.socket.emit("exitHub", true)
 
             if (game.players.length === 0) {
                 this.removeGame(game)
             } else {
                 this.eventsServices.emitMessage("updateGame", game.toDTO())
+                this.emitPlayersMessage(game, "updateHub", game.toDTO())
             }
         }
         return true
     }
 
+    sendMessage(player: Player, message: string) {
+
+        let game: Game = player.currentGame
+        if (game) {
+            game.newMessage(message, player)
+            this.emitPlayersMessage(game, "updateHub", game.toDTO())
+        }
+        return true
+    }
+
+    startGame(player: Player) {
+
+        let game: Game = player.currentGame
+
+        if (game && game.owner?.id === player.id) {
+
+            game.startGame()
+
+        }
 
 
-
+        return true
+    }
 
 
 

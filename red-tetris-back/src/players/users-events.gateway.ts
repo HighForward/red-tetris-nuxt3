@@ -5,7 +5,7 @@ import { WsUser } from "../decorators/ws.user";
 import { WsData } from "../decorators/ws-data.decorator";
 import { EventsServices } from "../events/events.services";
 import { PlayersService } from "./players.service";
-import Player, { UserDTO, UserType } from "./player";
+import Player, { PlayerDTO, UserType } from "./player";
 
 @UseGuards(WsGuard)
 @WebSocketGateway(81,
@@ -34,7 +34,7 @@ export class UsersEventsGateway {
     }
 
     @SubscribeMessage('getUsersOnline')
-    getUsersOnline(@WsUser() player: Player) : UserDTO[]
+    getUsersOnline(@WsUser() player: Player) : PlayerDTO[]
     {
         this.logger.log(`getUsersOnline()`)
         const players = this.playersService.getUsers()

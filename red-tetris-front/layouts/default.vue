@@ -1,14 +1,13 @@
+<script setup>
+
+</script>
+
 <template>
   <div class="layout">
     <Header/>
     <NuxtPage />
   </div>
 </template>
-
-
-<script setup>
-
-</script>
 
 <style>
 

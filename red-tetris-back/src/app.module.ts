@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EventsModule } from './events/events.module';
 import { GamesModule } from './games/games.module';
-import { PlayersModule } from "./users/players.module";
+import { PlayersModule } from "./players/players.module";
 
 @Module({
   imports: [EventsModule, PlayersModule, ScheduleModule.forRoot(), GamesModule],

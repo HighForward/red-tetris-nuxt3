@@ -1,7 +1,7 @@
 import { forwardRef, Module } from "@nestjs/common";
 import { AppGateway } from "./events.gateway";
 import { EventsServices } from "./events.services";
-import { PlayersModule } from "../users/players.module";
+import { PlayersModule } from "../players/players.module";
 import { GamesModule } from "../games/games.module";
 
 @Module({

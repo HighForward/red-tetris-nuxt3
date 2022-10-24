@@ -5,17 +5,11 @@ import { ref, onMounted, reactive } from '#imports'
 // https://vuejs.org/guide/essentials/template-refs.html#accessing-the-refs
 // https://v3.nuxtjs.org/guide/going-further/internals
 
-
-onMounted(() => {
-
-})
-
-
 </script>
 
 <template>
   <div class="index">
-    <SelectUsername title="test" />
+    <SelectUsername />
   </div>
 </template>
 
