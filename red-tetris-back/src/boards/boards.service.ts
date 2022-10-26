@@ -1,50 +1,85 @@
 import { Injectable } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
-import { Server } from 'socket.io';
 import Player from "../players/player";
+import { Board, BoardState } from "./board";
+import { Game } from "../games/game";
+import { Piece } from "../pieces/piece";
 
 @Injectable()
 export class BoardsService {
     constructor(
-        private schedulerRegistry: SchedulerRegistry
+        private schedulerRegistry: SchedulerRegistry,
     ) {}
 
-    isBoardStarted(user: Player)
-    {
-        // return (user.currentBoard && user.currentBoard.state === GameState.Started && user.currentBoard.current_block !== null)
+    emitPieceUpdate(game: Game, board: Board, set_to_board: boolean = false) {
+        if (board.current_piece) {
+            game.players.forEach(player => {
+                player.socket.emit("updatePiece", board.toPieceUpdate(set_to_board))
+            })
+        }
+    }
+
+    startBoards(game: Game, pieces: Piece[]) {
+
+        const players: Player[] = game.getPlayers()
+
+        players.forEach(player => {
+            const board: Board = new Board(player, pieces, `${game.uid}:${player.id}`)
+            game.addBoard(board)
+            player.currentBoard = board
+            board.state = BoardState.STARTED
+
+            const interval = setInterval(() => {
+
+                const set_to_board = board.trigger()
+                this.emitPieceUpdate(game, board, set_to_board)
+
+            }, 1000)
+
+            this.schedulerRegistry.addInterval(board.game_interval, interval)
+        })
+    }
+
+    stopBoard(player: Player) {
+        const board: Board = player.currentBoard
+        if (board && board.game_interval) {
+            this.schedulerRegistry.deleteInterval(board.game_interval)
+            board.game_interval = null
+        }
     }
 
 
-    rotateBlock(user: Player)
+    rotateBlock(player: Player)
     {
-        // if (this.isBoardStarted(user))
-        // {
-        //     const tmp_bord = user.currentBoard.rotateTetris()
-        //     user.currentRoom.emitBoardToOthers(user, tmp_bord)
-        // }
+        const board = player.currentBoard
+        const game = player.currentGame
+        if (board && board.isBoardStarted()) {
+            board.current_piece.rotateTetris(board.board)
+            this.emitPieceUpdate(game, board)
+        }
     }
 
     translateBlock(user: Player, value: number)
     {
-        // if (this.isBoardStarted(user))
-        // {
-        //     const tmp_bord = user.currentBoard.translateTetris(value)
-        //     user.currentBoard.updateBoard(user.currentBoard, tmp_bord)
-        //     user.currentRoom.emitBoardToOthers(user, tmp_bord)
-        // }
+        const board = user.currentBoard
+        const game = user.currentGame
+        if (board && board.isBoardStarted()) {
+            board.current_piece.translate(value, board.board)
+            this.emitPieceUpdate(game, board)
+        }
     }
 
-    fastDown(user: Player, game_uid: string, server: Server)
+    fastDown(user: Player)
     {
-        // if (this.isBoardStarted(user))
-        // {
-        //     const others = user.currentRoom.getOthers(user)
-        //     user.currentRoom.gameTrigger(user.currentBoard, others, this.schedulerRegistry, server)
-        //
-        // }
+        const board = user.currentBoard
+        const game = user.currentGame
+        if (board && board.isBoardStarted()) {
+            board.current_piece.fastDown(board.board)
+            this.emitPieceUpdate(game, board)
+        }
     }
 
-    instantDown(user: Player, game_uid: string, server: Server)
+    instantDown(user: Player)
     {
         // if (this.isBoardStarted(user))
         // {

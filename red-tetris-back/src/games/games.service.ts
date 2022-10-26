@@ -1,13 +1,18 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Game } from "./game";
+import { Game, GameState } from "./game";
 import Player from "../players/player";
 import { EventsServices } from "../events/events.services";
+import { BoardsService } from "../boards/boards.service";
+import { PiecesService } from "../pieces/pieces.service";
+import { Piece } from "../pieces/piece";
 
 @Injectable()
 export class GamesService {
 
     constructor(
-        private eventsServices: EventsServices
+        private eventsServices: EventsServices,
+        private boardsService: BoardsService,
+        private piecesService: PiecesService
     ) {}
 
     private games: Game[] = []
@@ -64,6 +69,8 @@ export class GamesService {
         let game: Game = player?.currentGame
 
         if (game) {
+            this.boardsService.stopBoard(player)
+            game.removeBoard(player)
             game.removePlayer(player)
 
             player.socket.emit("exitHub", true)
@@ -92,13 +99,21 @@ export class GamesService {
 
         let game: Game = player.currentGame
 
+        if (!game || game.state !== GameState.WAITING)
+            return new Error("You can't start this game")
+
         if (game && game.owner?.id === player.id) {
 
             game.startGame()
 
+            this.emitPlayersMessage(game, "startGame", true)
+
+            const pieces: Piece[] = this.piecesService.generatePiecesPattern()
+
+            this.boardsService.startBoards(game, pieces)
+
+
         }
-
-
         return true
     }
 

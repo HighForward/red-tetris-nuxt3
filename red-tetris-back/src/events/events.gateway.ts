@@ -38,20 +38,20 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     handleConnection(client: Socket) {
 
-        const user: Player = this.usersService.createWsUser(client)
-        this.logger.log(`User Connect: ${user.id}`)
-        user.socket.emit("connection", user.toDTO());
+        const player: Player = this.usersService.createWsUser(client)
+        this.logger.log(`User Connect: ${player.id}`)
+        player.socket.emit("connection", player.toDTO());
     }
 
     handleDisconnect(client: Socket) {
 
-        const user: Player = this.usersService.findOneById(client.id)
+        const player: Player = this.usersService.findOneById(client.id)
 
-        if (user) {
-            this.gamesService.leaveGame(user)
+        if (player) {
+            this.gamesService.leaveGame(player)
+            this.usersService.removeOne(player)
+            this.logger.log(`User Disconnect: ${client.id}`)
         }
-
-        this.logger.log(`User Disconnect: ${client.id}`)
     }
 
 }

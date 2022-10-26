@@ -6,6 +6,7 @@ import { WsGuard } from "../guards/ws.guard";
 import { WsUser } from "../decorators/ws.user";
 import { WsData } from "../decorators/ws-data.decorator";
 import Player from "../players/player";
+import { BoardDTO } from "./board";
 
 @UseGuards(WsGuard)
 @WebSocketGateway(81,
@@ -16,30 +17,34 @@ export class BoardsEventGateway {
     constructor(private readonly boardsService: BoardsService) {
     }
 
-    @WebSocketServer() server: Server
+    @SubscribeMessage('getBoard')
+    getBoard(@WsUser() user: Player) : BoardDTO
+    {
+        return user?.currentBoard.toDTO()
+    }
 
     @SubscribeMessage('rotateBlock')
-    rotateBlock(@WsUser() user: Player, @WsData() game_uid: string)
+    rotateBlock(@WsUser() user: Player)
     {
-        // this.boardsService.rotateBlock(user)
+        this.boardsService.rotateBlock(user)
     }
 
     @SubscribeMessage('translateBlock')
-    translateBlock(@WsUser() user: Player, @WsData() payload: { game_uid: string, value: number })
+    translateBlock(@WsUser() user: Player, @WsData() value: number )
     {
-        // this.boardsService.translateBlock(user, payload.value)
+        this.boardsService.translateBlock(user, value)
     }
 
     @SubscribeMessage('fastDown')
-    fastDown(@WsUser() user: Player, @WsData() game_uid: string)
+    fastDown(@WsUser() user: Player)
     {
-        // this.boardsService.fastDown(user, game_uid, this.server)
+        this.boardsService.fastDown(user)
     }
 
     @SubscribeMessage('instantDown')
-    instantDown(@WsUser() user: Player, @WsData() game_uid: string)
+    instantDown(@WsUser() user: Player)
     {
-        // this.boardsService.instantDown(user, game_uid, this.server)
+        this.boardsService.instantDown(user)
     }
 
 }

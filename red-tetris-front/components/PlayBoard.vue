@@ -1,25 +1,48 @@
 <script setup lang="ts">
 
-import { useBoard } from "~/composables/board";
+import { useBoard, useBoardListeners } from "~/composables/board";
+import { useKeyBoard } from "~/composables/keyboard";
 
 const board = useBoard()
 
+useBoardListeners()
+useKeyBoard()
+
+function setColor(val: number)
+{
+  if (val === 1)
+    return 'bg-tetris-purple'
+  if (val === 2)
+    return 'bg-tetris-yellow'
+  if (val === 3)
+    return 'bg-tetris-green'
+  if (val === 4)
+    return 'bg-tetris-blue'
+  if (val === 5)
+    return 'bg-tetris-orange'
+  if (val === 6)
+    return 'bg-tetris-blue-sky'
+  if (val === 7)
+    return 'bg-tetris-red'
+  if (val === 9)
+    return 'bg-tetris-hard-gray'
+}
 
 </script>
 
 <template>
 
   <div class="flex flex-col w-full p-4 justify-center items-center text-smallgray">
-    <span>Partie de:<span class="text-red pl-2 font-bold">{{ " " + board?.player?.name }}</span></span>
+    <span>Partie de:<span class="text-red pl-2 font-bold">{{ " " + board?.player?.username }}</span></span>
     <span>Score:<span class="text-red pl-2 font-bold">{{ " " + board.score }}</span></span>
   </div>
 
   <div class="flex flex-col items-center h-full font-semibold">
 
     <div class="flex flex-col justify-center bg-gray rounded-sm" style="box-shadow: 0px 0px 25px 5px rgba(0, 0, 0, 0.35);">
-      <div class="flex flex-row" v-for="(row, i) in board.board" :key="i">
+      <div class="flex flex-row" v-for="(row, y) in board.board" :key="y">
         <div class="h-8 w-8" v-for="(item, x) in row" :key="x">
-          <div class="w-full h-full" style="box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.5);"></div>
+          <div class="w-full h-full" :class="setColor(item)" style="box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.5);"></div>
         </div>
       </div>
     </div>

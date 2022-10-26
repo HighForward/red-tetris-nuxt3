@@ -74,7 +74,7 @@ export class GamesEventsGateway {
     }
 
     @SubscribeMessage('startGame')
-    startGame(@WsUser() player: Player) : boolean {
+    startGame(@WsUser() player: Player) {
         this.logger.log(`player ${player.id} start game ${player?.currentGame?.name}`)
         return this.gamesService.startGame(player)
     }

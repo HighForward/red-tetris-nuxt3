@@ -1,4 +1,5 @@
 import { GameDTO } from "~/types/game.dto";
+import { useToast } from "vue-toastification";
 
 export const useGames = () => useState<GameDTO[]>('games', () => [])
 
@@ -16,7 +17,6 @@ export function useGamesListeners() {
     }
 
     function addGame(new_game: GameDTO) {
-        console.log("adding game")
         games.value.push(new_game)
     }
 
@@ -28,7 +28,6 @@ export function useGamesListeners() {
     }
 
     function listenGamesListEvents() {
-        $client.emit("getGames", (game_list: GameDTO[]) => games.value = game_list)
         $client.on("newGame", (new_game: GameDTO) => addGame(new_game))
         $client.on("removeGame", (removed_game: GameDTO) => removeGame(removed_game))
         $client.on("updateGame", (updated_game: GameDTO) => updateGame(updated_game))
@@ -41,12 +40,11 @@ export function useGamesListeners() {
     }
 
     onMounted(() => {
-        console.log("listen listeners")
+        $client.emit("getGames", (game_list: GameDTO[]) => games.value = game_list)
         listenGamesListEvents()
     })
 
     onUnmounted(() => {
-        console.log("remove listeners")
         removeGamesListEvents()
     })
 }

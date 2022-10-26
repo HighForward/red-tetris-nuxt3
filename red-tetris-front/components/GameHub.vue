@@ -30,6 +30,7 @@
     }
 
     $client.emit("startGame")
+
   }
 
   function kickPlayer(targetPlayer: PlayerDto) {

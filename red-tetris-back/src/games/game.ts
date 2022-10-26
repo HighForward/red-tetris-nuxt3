@@ -2,17 +2,18 @@ import Player, { PlayerDTO } from "../players/player";
 import { v4 as uuidv4 } from 'uuid';
 import { Board } from "../boards/board";
 
-export enum RoomState {
-    WARMING = 'WARMING',
-    STARTED = 'STARTED',
-    FINISHED = 'FINISHED'
+
+export enum GameState
+{
+    ONGOING = 'ONGOING',
+    WAITING = 'WAITING'
 }
 
 
 export interface GameDTO {
     owner: PlayerDTO
     players: PlayerDTO[]
-    state: RoomState
+    state: GameState
     name: string
     uid: string
     chat: string[]
@@ -34,13 +35,11 @@ export class Game {
 
     owner: Player = null
     players: Player[] = []
-    state: RoomState = RoomState.WARMING
+    state: GameState = GameState.WAITING
     name: string = null
-    uid: string
+    uid: string = null
     chat: string[] = []
     boards: Board[] = []
-
-    // block_loop: number[] = []
 
     constructor(owner: Player, lobby_name: string) {
         this.owner = owner
@@ -66,7 +65,16 @@ export class Game {
             }
 
             player.currentGame = null
+            player.currentBoard = null
             this.newMessage(`${player.username} left the game`,)
+        }
+    }
+
+    removeBoard(player: Player) {
+        const board: Board = player.currentBoard
+        if (board) {
+            const i: number = this.boards.findIndex((b) => b.game_interval === board.game_interval)
+            this.boards.splice(i, 1)
         }
     }
 
@@ -74,10 +82,20 @@ export class Game {
         this.chat.push(chatPrefix(player) + message)
     }
 
+    getBoards() {
+        return this.boards
+    }
+
+    getPlayers() {
+        return this.players
+    }
 
     startGame() {
+        this.state = GameState.ONGOING
+    }
 
-
+    addBoard(board: Board) {
+        this.boards.push(board)
     }
 
     toDTO() : GameDTO

@@ -18,14 +18,14 @@ export class PlayersService {
         return this.players.findIndex((user) =>  { return user.id === id })
     }
 
-    // RemoveOneById(id: string) : void
-    // {
-    //     let user_index: number = -1
-    //     if ((user_index = this.findOneIndexById(id)) !== -1)
-    //     {
-    //         this.players.splice(user_index, 1)
-    //     }
-    // }
+    removeOne(player: Player) : void
+    {
+        let user_index: number = -1
+        if ((user_index = this.findOneIndexById(player.id)) !== -1)
+        {
+            this.players.splice(user_index, 1)
+        }
+    }
 
     createWsUser(client: Socket) : Player
     {
