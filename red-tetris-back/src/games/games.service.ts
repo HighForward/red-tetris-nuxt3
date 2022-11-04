@@ -5,6 +5,7 @@ import { EventsServices } from "../events/events.services";
 import { BoardsService } from "../boards/boards.service";
 import { PiecesService } from "../pieces/pieces.service";
 import { Piece } from "../pieces/piece";
+import { Board } from "../boards/board";
 
 @Injectable()
 export class GamesService {
@@ -67,10 +68,11 @@ export class GamesService {
     leaveGame(player: Player) {
 
         let game: Game = player?.currentGame
+        let board: Board = player?.currentBoard
 
         if (game) {
-            this.boardsService.stopBoard(player)
-            game.removeBoard(player)
+            this.boardsService.stopBoard(board, true)
+            game.removeBoard(board)
             game.removePlayer(player)
 
             player.socket.emit("exitHub", true)
@@ -106,14 +108,14 @@ export class GamesService {
 
             game.startGame()
 
-            this.emitPlayersMessage(game, "startGame", true)
-
             const pieces: Piece[] = this.piecesService.generatePiecesPattern()
 
             this.boardsService.startBoards(game, pieces)
 
-
+            this.emitPlayersMessage(game, "startGame", game.boards.map(board => board.toDTO()))
+            this.eventsServices.emitMessage("updateGame", game.toDTO())
         }
+
         return true
     }
 

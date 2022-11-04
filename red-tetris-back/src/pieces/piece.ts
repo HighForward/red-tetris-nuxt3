@@ -62,6 +62,11 @@ export interface UpdatePieceDTO {
     set_to_board: boolean
 }
 
+export interface RemoveRowsDTO {
+    player_id: string
+    removed_rows: number[]
+}
+
 export class Piece {
 
     y: number
@@ -77,7 +82,16 @@ export class Piece {
         this.x = 0;
     }
 
-    isTetrisBlock(val: number)
+    clone() {
+        let cloned = new Piece()
+        cloned.x = this.x
+        cloned.y = this.y
+        cloned.item = this.item
+        cloned.color = this.color
+        return cloned
+    }
+
+    static isTetrisBlock(val: number)
     {
         return [1, 2, 3, 4, 5, 6, 7, 9].includes(val)
     }
@@ -118,6 +132,12 @@ export class Piece {
         }
     }
 
+    instantDown(board: Array<Array<number>>) {
+        while (this.getBoundsVertical(board)) {
+            this.y += 1
+        }
+    }
+
     getLastBoundVertical(col: number)
     {
         let lastHit = -1
@@ -126,7 +146,7 @@ export class Piece {
 
         for (let y = 0; y < blockLength; y++)
         {
-            if (this.isTetrisBlock(this.item[y][col]))
+            if (Piece.isTetrisBlock(this.item[y][col]))
                 lastHit = y
         }
         return (lastHit === -1 ? -1 : lastHit + 1)
@@ -143,7 +163,7 @@ export class Piece {
             if (lastYBound === -1)
                 continue
 
-            if ((this.y + lastYBound > 19 || this.isTetrisBlock(board[this.y + lastYBound][this.x + col]))) {
+            if ((this.y + lastYBound > 19 || Piece.isTetrisBlock(board[this.y + lastYBound][this.x + col]))) {
                 return false
             }
         }
@@ -159,7 +179,7 @@ export class Piece {
 
         for (let x = 0; x < blockLength; x++)
         {
-            if (this.isTetrisBlock(this.item[row][x])) {
+            if (Piece.isTetrisBlock(this.item[row][x])) {
                 if (firstHit === -1)
                     firstHit = x
                 lastHit = x
@@ -183,9 +203,9 @@ export class Piece {
                     return false
                 if (this.x + firstHit + value < 0)
                     return false
-                if (value > 0 && this.isTetrisBlock(board[this.y + row][this.x + lastHit + 1]))
+                if (value > 0 && Piece.isTetrisBlock(board[this.y + row][this.x + lastHit + 1]))
                     return false
-                if (value < 0 && this.isTetrisBlock(board[this.y + row][this.x + firstHit - 1]))
+                if (value < 0 && Piece.isTetrisBlock(board[this.y + row][this.x + firstHit - 1]))
                     return false
             }
         }
@@ -197,7 +217,7 @@ export class Piece {
         {
             for (let x = 0; x < this.item.length; x++)
             {
-                if (this.isTetrisBlock(this.item[y][x])) {
+                if (Piece.isTetrisBlock(this.item[y][x])) {
                     callback({
                         y: y + this.y,
                         x: x + this.x,
@@ -222,7 +242,7 @@ export class Piece {
                 return
             }
 
-            if (this.isTetrisBlock(board[pos.y][pos.x])) {
+            if (Piece.isTetrisBlock(board[pos.y][pos.x])) {
                 can_be_inserted = false
                 return
             }

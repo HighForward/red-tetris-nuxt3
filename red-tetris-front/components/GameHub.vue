@@ -96,7 +96,7 @@
 
           <div class="lobbyRow flex flex-1 m-2 border rounded" style="border-color: #DDDDDD">
             <form @submit.prevent="sendMessage" class="flex justify-end border-black flex-col font-normal w-full">
-              <div class="p-1" style="overflow-y: scroll; overflow-x: hidden; overflow-wrap: anywhere; height: 125px">
+              <div class="p-1 flex flex-col-reverse" style="overflow-y: scroll; overflow-x: hidden; overflow-wrap: anywhere; height: 125px">
                 <div class="text-sm text-_light" v-for="msg in hub?.chat" :key="msg">
                   <div>{{ msg }}</div>
                 </div>

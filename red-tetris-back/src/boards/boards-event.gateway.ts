@@ -20,7 +20,16 @@ export class BoardsEventGateway {
     @SubscribeMessage('getBoard')
     getBoard(@WsUser() user: Player) : BoardDTO
     {
-        return user?.currentBoard.toDTO()
+        return user?.currentBoard?.toDTO()
+    }
+
+    @SubscribeMessage('getBoards')
+    getBoards(@WsUser() user: Player) : BoardDTO[]
+    {
+        const game = user.currentGame
+        if (game) {
+            return game.boards.map((game) => game.toDTO())
+        }
     }
 
     @SubscribeMessage('rotateBlock')

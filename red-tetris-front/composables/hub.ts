@@ -1,5 +1,6 @@
 import { GameDTO, GameState } from "~/types/game.dto";
 import { useToast } from "vue-toastification";
+import { BoardDTO } from "~/types/board.dto";
 
 export const useHub = () => useState<GameDTO>('hub', () => ({
     owner: {},
@@ -13,6 +14,7 @@ export const useHub = () => useState<GameDTO>('hub', () => ({
 export function useHubListeners() {
     const { $client } = useNuxtApp()
     const hub = useHub()
+    const game_boards = useGameBoards()
     const toast = useToast()
 
     function exitHub(): void {
@@ -23,15 +25,16 @@ export function useHubListeners() {
         hub.value = updatedHub
     }
 
-    function startGame() {
+    function startGame(boards: BoardDTO[]) {
         toast.info('The Game will start')
+        game_boards.value = boards
         navigateTo('/play')
     }
 
     function listenHubEvents() {
         $client.on("exitHub", () => exitHub())
         $client.on("updateHub", (hub: GameDTO) => updateHub(hub))
-        $client.on("startGame", () => startGame())
+        $client.on("startGame", (boards: BoardDTO[]) => startGame(boards))
     }
 
     function removeHubEvents() {
@@ -41,6 +44,7 @@ export function useHubListeners() {
     }
 
     onMounted(() => {
+        $client.emit('getGame', (hub: GameDTO) => updateHub(hub))
         listenHubEvents()
     })
 

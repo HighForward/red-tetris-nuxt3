@@ -22,6 +22,11 @@ export class GamesEventsGateway {
 
     private logger: Logger = new Logger(GamesEventsGateway.name);
 
+    @SubscribeMessage('getGame')
+    getGame(@WsUser() player: Player) {
+        return player.currentGame.toDTO()
+    }
+
     @SubscribeMessage('getGames')
     getGames(@WsUser() player: Player) {
         return this.gamesService.getGames().map(game => game.toDTO())

@@ -2,13 +2,11 @@ import Player, { PlayerDTO } from "../players/player";
 import { v4 as uuidv4 } from 'uuid';
 import { Board } from "../boards/board";
 
-
 export enum GameState
 {
     ONGOING = 'ONGOING',
     WAITING = 'WAITING'
 }
-
 
 export interface GameDTO {
     owner: PlayerDTO
@@ -52,7 +50,7 @@ export class Game {
 
     addPlayer(player: Player) {
         this.players.push(player)
-        this.newMessage(`${player.username} join the game`)
+        this.newMessage(`${player.username} joined the game`)
     }
 
     removePlayer(player: Player) {
@@ -70,20 +68,26 @@ export class Game {
         }
     }
 
-    removeBoard(player: Player) {
-        const board: Board = player.currentBoard
+    removeBoard(board: Board) {
         if (board) {
             const i: number = this.boards.findIndex((b) => b.game_interval === board.game_interval)
             this.boards.splice(i, 1)
         }
+
+        this.newMessage(`${board?.player?.username}: finished. [${this.boards.length}/8] remaining.`)
+
+        if (this.boards.length === 0) {
+            this.state = GameState.WAITING
+            this.newMessage(`${board?.player?.username} WON !!`)
+        }
+
+        this.players?.forEach((player) => {
+            player.socket.emit('updateHub', this.toDTO())
+        })
     }
 
     newMessage(message: string, player?: Player) {
-        this.chat.push(chatPrefix(player) + message)
-    }
-
-    getBoards() {
-        return this.boards
+        this.chat.unshift(chatPrefix(player) + message)
     }
 
     getPlayers() {

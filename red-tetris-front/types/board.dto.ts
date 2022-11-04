@@ -12,6 +12,11 @@ export interface UpdatePieceDTO {
     set_to_board: boolean
 }
 
+export interface RemoveRowsDTO {
+    player_id: string
+    removed_rows: number[]
+}
+
 export interface Pos {
     x: number
     y: number

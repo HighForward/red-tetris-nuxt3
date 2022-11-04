@@ -13,8 +13,4 @@ export class EventsServices {
         this.server.emit(message, data)
     }
 
-    getServerSocket()
-    {
-        return this.server
-    }
 }
