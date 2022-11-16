@@ -10,14 +10,12 @@ import {
 import { Logger, UseFilters, UseGuards } from '@nestjs/common';
 import { Socket, Server } from 'socket.io';
 import { EventsServices } from './events.services';
-import { WsUser } from "../decorators/ws.user";
-import { WsGuard } from 'src/guards/ws.guard';
 import { WsAllExceptionsFilter } from "../filters/ws-all-exception.filter";
 import Player from "../players/player";
 import { PlayersService } from "../players/players.service";
 import { GamesService } from "../games/games.service";
 
-@WebSocketGateway(81,
+@WebSocketGateway(Number(process.env.WS_PORT),
 { cors: '*:*' }
 )
 @UseFilters(WsAllExceptionsFilter)
@@ -33,7 +31,7 @@ export class AppGateway implements OnGatewayInit, OnGatewayConnection, OnGateway
 
     afterInit(server: Server) {
         this.eventsService.server = server
-        this.logger.log(`WebSocket Init: Listen on port 81`);
+        this.logger.log(`WebSocket Init: Listen on port ${Number(process.env.WS_PORT)}`);
     }
 
     handleConnection(client: Socket) {

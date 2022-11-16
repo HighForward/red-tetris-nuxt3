@@ -5,9 +5,12 @@ import { useGames } from "~/composables/games";
 
 export default defineNuxtPlugin((nuxtApp) => {
 
-    console.log("Loading socket.io")
+    const runtimeConfig = useRuntimeConfig()
 
-    const client = io('http://localhost:81', {
+    console.log("Loading socket.io")
+    console.log(`http://${runtimeConfig.public.BACKEND_URL}:${runtimeConfig.public.WS_PORT}`)
+
+    const client = io(`http://${runtimeConfig.public.BACKEND_URL}:${runtimeConfig.public.WS_PORT}`, {
         autoConnect: false,
         transports: ['websocket'],
         upgrade: false

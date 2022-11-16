@@ -1,6 +1,3 @@
 #!/bin/bash
 
-# install dependencies
-yarn install
-
-exec "$@"
+npm run start:dev

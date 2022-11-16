@@ -8,7 +8,7 @@ import { PlayersService } from "./players.service";
 import Player, { PlayerDTO, UserType } from "./player";
 
 @UseGuards(WsGuard)
-@WebSocketGateway(81,
+@WebSocketGateway(Number(process.env.WS_PORT),
     { cors: '*:*' }
 )
 export class UsersEventsGateway {

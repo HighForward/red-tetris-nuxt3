@@ -10,7 +10,7 @@ import { Game, GameDTO } from "./game";
 import { PlayersService } from "../players/players.service";
 
 @UseGuards(WsGuard)
-@WebSocketGateway(81,
+@WebSocketGateway(Number(process.env.WS_PORT),
     { cors: '*:*' }
 )
 export class GamesEventsGateway {

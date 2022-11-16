@@ -1,10 +1,8 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BaseWsExceptionFilter, WsException } from "@nestjs/websockets";
-import { WsExceptionFilter} from '@nestjs/common';
-import { WsAllExceptionsFilter } from "./filters/ws-all-exception.filter";
 
-const PORT = 8000
+const PORT = process.env.PORT
+const WS_PORT = process.env.WS_PORT
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -12,7 +10,9 @@ async function bootstrap() {
   });
     app.enableCors();
     // app.useGlobalFilters(new WsAllExceptionsFilter())
-  await app.listen(process.env.PORT);
+  await app.listen(PORT);
+  console.log(`API Listen on port ${PORT}`)
+  console.log(`Loaded WS_PORT ${WS_PORT}`)
 }
 
 bootstrap();
