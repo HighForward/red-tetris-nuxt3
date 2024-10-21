@@ -56,7 +56,7 @@ const showKickButton = (targetPlayer: IPlayer) => {
     </div>
     <div v-else class="flex justify-center pt-12 font-semibold">
         <div class="rounded-sm pb-4 px-2" style="box-shadow: 0px 0px 25px 5px rgba(0, 0, 0, 0.35)">
-            <div class="flex justify-center py-2 font-semibold text-2xl">{{ 'hub.name' }}</div>
+            <div class="flex justify-center py-2 font-semibold text-2xl">{{ game.name }}</div>
 
             <div class="flex flex-row">
                 <div class="flex flex-col">

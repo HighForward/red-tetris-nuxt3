@@ -9,7 +9,7 @@ import { useBoardsStore } from "@/stores/boards";
 const gamesStore = useGamesStore()
 const playersStore = usePlayerStore()
 const boardsStore = useBoardsStore()
-// socket.removeAllListeners()
+
 
 gamesStore.bindEvent()
 playersStore.bindEvent()
