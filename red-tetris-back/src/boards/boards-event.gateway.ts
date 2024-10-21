@@ -9,7 +9,7 @@ import Player from "../players/player";
 import { BoardDTO } from "./board";
 
 @UseGuards(WsGuard)
-@WebSocketGateway(Number(process.env.WS_PORT),
+@WebSocketGateway(Number(process.env.WS_PORT || 81),
     { cors: '*:*' }
 )
 export class BoardsEventGateway {

@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 const PORT = process.env.PORT
-const WS_PORT = process.env.WS_PORT
+const WS_PORT = process.env.WS_PORT || 81
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {

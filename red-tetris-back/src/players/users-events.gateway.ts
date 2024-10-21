@@ -8,7 +8,7 @@ import { PlayersService } from "./players.service";
 import Player, { PlayerDTO, UserType } from "./player";
 
 @UseGuards(WsGuard)
-@WebSocketGateway(Number(process.env.WS_PORT),
+@WebSocketGateway(Number(process.env.WS_PORT || 81),
     { cors: '*:*' }
 )
 export class UsersEventsGateway {
@@ -26,12 +26,6 @@ export class UsersEventsGateway {
         return player.toDTO()
     }
 
-    @SubscribeMessage('continueAsGuest')
-    continueAsGuest(@WsUser() player: Player) {
-        this.playersService.setUsername(player.id, `guest#${player.id.substring(0, 4)}`, UserType.GUEST)
-        this.logger.log(`continueAsGuest() user: ${player.id} continue as ${player.username}`)
-        return player.toDTO()
-    }
 
     @SubscribeMessage('getUsersOnline')
     getUsersOnline(@WsUser() player: Player) : PlayerDTO[]

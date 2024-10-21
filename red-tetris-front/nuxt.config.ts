@@ -1,4 +1,8 @@
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
+
+
+import { defineNuxtConfig } from "nuxt/config";
+
 export default defineNuxtConfig({
     runtimeConfig: {
         // The private keys which are only available within server-side
@@ -7,7 +11,7 @@ export default defineNuxtConfig({
         public: {
             BACKEND_URL: process.env.BACKEND_URL || '127.0.0.1',
             WS_PORT: Number(process.env.WS_PORT) || 81,
-            // PORT: process.env.PORT || 80
+            PORT: process.env.PORT || 80
         }
     },
     app: {
