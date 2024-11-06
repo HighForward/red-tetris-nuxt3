@@ -5,6 +5,7 @@ import type { IPlayer } from "@/stores/players";
 import { useRouter } from "vue-router";
 import router from "@/router";
 import { useBoardsStore } from "@/stores/boards";
+import { usePlayerStore } from "@/stores/players";
 
 export interface IGame {
     owner: IPlayer
@@ -37,6 +38,7 @@ export interface IUpdatePiece {
 
 export interface IRemoveRows {
     player_id: string
+    score: number
     removed_rows: number[]
 }
 
@@ -70,17 +72,22 @@ export const useGamesStore = defineStore('games', {
             });
         },
 
-        createGame(name: string) {
-            socket.emit("createGame", name, async (game: IGame) => {
+        getGame() {
+            socket.emit("getGame",async (game: IGame) => {
                 this.game = game
-                await this.navigateToGame()
             });
         },
 
-        joinGame(game: IGame) {
-            socket.emit("joinGame", game.uid, async (game: IGame) => {
-                this.game = game
-                await this.navigateToGame()
+        createGame(name: string) {
+            socket.emit("createGame", name, async (game: IGame) => {
+                await this.navigateToGame(game.uid)
+            });
+        },
+
+        joinGame(game_uid: string, redirect: boolean = false) {
+            socket.emit("joinGame", game_uid, async (game: IGame) => {
+                if (redirect)
+                    await this.navigateToGame(game.uid)
             });
         },
 
@@ -117,27 +124,28 @@ export const useGamesStore = defineStore('games', {
             socket.emit("leaveGame")
         },
 
-        async navigateToGame() {
-            if (this.game) {
+        async navigateToGame(game_uid: string) {
+            const { player } = usePlayerStore()
+
+            if (game_uid && player) {
                 await router.push({
-                    path: 'hub',
-                    query: { uuid: this.game.uid }
+                    path: `/${game_uid}/${player.username}`
                 })
             }
         },
 
-        addGame(new_game: any) {
+        addGame(new_game: IGame) {
             this.games.push(new_game)
         },
 
-        removeGame(removed_game: any) {
+        removeGame(removed_game: IGame) {
             const index: number = this.games.findIndex(game => game.uid === removed_game.uid)
             if (index !== -1) {
                 this.games.splice(index, 1)
             }
         },
 
-        updateGames(updated_game: any) {
+        updateGames(updated_game: IGame) {
             const index: number = this.games.findIndex(game => game.uid === updated_game.uid)
             if (index !== -1) {
                 this.games[index] = updated_game

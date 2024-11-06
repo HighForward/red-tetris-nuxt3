@@ -9,10 +9,8 @@ export type IPlayer = {
 export const usePlayerStore = defineStore('players', {
 
     state: () : {
-        players: IPlayer[],
         player: IPlayer | null
     } => ({
-        players: [],
         player: null
     }),
     getters: {

@@ -64,6 +64,7 @@ export interface UpdatePieceDTO {
 
 export interface RemoveRowsDTO {
     player_id: string
+    score: number
     removed_rows: number[]
 }
 

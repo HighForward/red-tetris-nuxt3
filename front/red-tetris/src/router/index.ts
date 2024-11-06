@@ -23,6 +23,10 @@ const router = createRouter({
         path: '/play',
         name: 'play',
         component: Play,
+    },{
+        path: '/:game/:player',
+        name: 'hub',
+        component: Hub,
     }],
 })
 

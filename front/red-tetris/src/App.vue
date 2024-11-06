@@ -36,7 +36,7 @@ boardsStore.bindEvent()
 }
 
 .page__container {
-    @apply p-[32px];
+    @apply flex justify-center p-[32px];
     max-width: 1260px;
     width: 100%;
 }

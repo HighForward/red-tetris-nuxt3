@@ -142,6 +142,7 @@ export class Board
     toRemoveRows(rows: number[]) : RemoveRowsDTO {
         return {
             player_id: this.player.id,
+            score: this.score,
             removed_rows: rows
         }
     }

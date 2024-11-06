@@ -44,14 +44,27 @@ export function useKeyBoard() {
         }
     }
 
+    function keyDownEventListener(e: KeyboardEvent) {
+        e.preventDefault()
+        keyDownEvents(e)
+    }
+
+    function keyUpEventListener(e: KeyboardEvent) {
+        e.preventDefault()
+        keyUpEvents(e)
+    }
+
     onMounted(() =>  {
-        document.addEventListener('keydown', keyDownEvents)
-        document.addEventListener('keyup', keyUpEvents)
+        document.addEventListener('keydown', keyDownEventListener )
+        document.addEventListener('keyup', keyUpEventListener )
     })
 
     onUnmounted(() => {
-        document.removeEventListener('keydown', keyDownEvents)
-        document.removeEventListener('keyup', keyUpEvents)
+        document.removeEventListener('keydown', keyDownEventListener )
+        document.removeEventListener('keyup', keyUpEventListener )
+
     })
+
+    return { keyUpEventListener, keyDownEventListener }
 
 }

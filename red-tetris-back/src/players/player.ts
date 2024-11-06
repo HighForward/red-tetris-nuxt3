@@ -26,7 +26,7 @@ export default class Player {
 
     constructor(client: Socket) {
         this.id = client.id
-        this.username = `guest#${client.id.substring(0, 4)}`
+        this.username = `guest-${client.id.substring(0, 4)}`
         this.socket = client
         this.type = UserType.GUEST
         this.currentGame = null

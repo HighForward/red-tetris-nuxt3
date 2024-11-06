@@ -4,10 +4,11 @@ export default {
   theme: {
     extend: {},
       colors: {
-        base: '#16423C',
-        base_light: '#6A9C89',
-        content: '#C4DAD2',
-        content_light: '#E9EFEC',
+        base: '#222831',
+        base_light: '#31363F',
+        content: '#76ABAE',
+        content_light: '#EEEEEE',
+        primary: '#73EC8B',
 
           'tetris-orange': '#FFAC30',
           'tetris-purple': '#7E00AD',

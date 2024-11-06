@@ -21,13 +21,6 @@ export const useBoardsStore = defineStore('board', {
             })
         },
 
-
-        getBoard() {
-            // socket.emit('getBoard', (curr_board: any) => {
-            //     this.board = curr_board
-            // })
-        },
-
         removePiece(i: number, piece?: IPiece) {
             if (piece) {
                 piece.pos.forEach((pos: IPos) => {
@@ -79,43 +72,39 @@ export const useBoardsStore = defineStore('board', {
             })
         },
 
-        removeRows(remove_rows: IRemoveRows) {
+        async removeRows(remove_rows: IRemoveRows) {
             const i = this.boards.findIndex((b: IBoard) => b.player.id === remove_rows.player_id)
 
             if (i > -1 && remove_rows.removed_rows.length) {
 
-                remove_rows.removed_rows.forEach((row_index) => {
+                for (const row_index of remove_rows.removed_rows) {
+
+                    this.boards[i].score = remove_rows.score
+                    await this.removeRow(i, row_index)
 
 
-                    this.removeRow(i, row_index).then(() => {
+                    this.removePiece(i, this.boards[i].current_piece)
 
-                        this.removePiece(i, this.boards[i].current_piece)
+                    for (let y = row_index; y > 0; y--) {
+                        this.boards[i].board[y] = this.boards[i].board[y - 1].map((item: any) => item)
+                    }
+                    this.boards[i].board[0].fill(0)
 
-                        for (let y = row_index; y > 0; y--) {
-                            this.boards[i].board[y] = this.boards[i].board[y - 1].map((item: any) => item)
-                        }
-                        this.boards[i].board[0].fill(0)
-
-                        this.setPiece(i, this.boards[i].current_piece)
-
-                    })
-
-
-                })
+                    this.setPiece(i, this.boards[i].current_piece)
+                }
             }
+
+            return this.boards
         },
 
         async exitBoard() {
             const gamesStore = useGamesStore()
 
             if (gamesStore.game?.uid) {
-                await router.push({
-                    path: "/hub",
-                    query: { uuid: gamesStore.game.uid }
-                })
+
+                await gamesStore.navigateToGame(gamesStore.game?.uid)
             }
         },
-
     },
 
 })
