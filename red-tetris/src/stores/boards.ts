@@ -16,6 +16,7 @@ export const useBoardsStore = defineStore('board', {
         bindEvent() {
             socket.on('connect', () => {
                 socket.on("updatePiece", (updatePieceDTO: IUpdatePiece) => this.updatePiece(updatePieceDTO))
+                socket.on("updateShadowPiece", (updatePieceDTO: IUpdatePiece) => this.updateShadowPiece(updatePieceDTO))
                 socket.on("removeRows", (updatePieceDTO: IRemoveRows) => this.removeRows(updatePieceDTO))
                 socket.on("exitBoard", () => this.exitBoard())
             })
@@ -54,7 +55,37 @@ export const useBoardsStore = defineStore('board', {
                 }
 
                 this.setPiece(i, this.boards[i].current_piece)
+
             }
+        },
+
+        updateShadowPiece(updateShadowPieceDTO: IUpdatePiece) {
+
+            const i = this.boards.findIndex((b: IBoard) => b.player.id === updateShadowPieceDTO.player_id)
+
+
+            if (i > -1) {
+
+                if (updateShadowPieceDTO.set_to_board)
+                    this.boards[i].old_shadow_piece = undefined
+                else
+                    this.boards[i].old_shadow_piece = this.boards[i]?.current_shadow_piece || undefined
+
+                this.boards[i].current_shadow_piece = updateShadowPieceDTO.piece
+
+                if (!updateShadowPieceDTO.set_to_board) {
+                    this.removePiece(i, this.boards[i].old_shadow_piece)
+
+                    const tmpPiece = updateShadowPieceDTO.piece
+                    tmpPiece.pos.forEach((pos: IPos) => {
+                        if (this.boards[i].board && tmpPiece) {
+                            this.boards[i].board[pos.y][pos.x] = tmpPiece.color
+                        }
+                    })
+                }
+
+            }
+
         },
 
         removeRow(i: number, row_index: number) {
@@ -81,7 +112,6 @@ export const useBoardsStore = defineStore('board', {
 
                     this.boards[i].score = remove_rows.score
                     await this.removeRow(i, row_index)
-
 
                     this.removePiece(i, this.boards[i].current_piece)
 

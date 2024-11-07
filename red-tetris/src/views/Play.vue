@@ -45,6 +45,8 @@ function setColor(val: number) {
         return 'bg-tetris-red'
     if (val === 9)
         return 'bg-tetris-hard-gray'
+    if (val === 10)
+      return 'bg-tetris-shadow'
 }
 
 onMounted(() => {

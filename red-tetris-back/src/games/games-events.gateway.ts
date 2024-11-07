@@ -2,12 +2,14 @@ import { Body, Catch, Logger, Req, UseFilters, UseGuards } from "@nestjs/common"
 import { WsGuard } from "../guards/ws.guard";
 import { WsUser } from "../decorators/ws.user";
 import { WsData } from "../decorators/ws-data.decorator";
-import { EventsServices } from "../events/events.services";
 import { SubscribeMessage, WebSocketGateway, WsException } from "@nestjs/websockets";
 import Player, { PlayerDTO } from "src/players/player";
 import { GamesService } from "./games.service";
 import { Game, GameDTO } from "./game";
 import { PlayersService } from "../players/players.service";
+require('dotenv').config()
+
+console.log(process.env.WS_PORT)
 
 @UseGuards(WsGuard)
 @WebSocketGateway(Number(process.env.WS_PORT || 81),

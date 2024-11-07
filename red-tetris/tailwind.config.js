@@ -17,7 +17,8 @@ export default {
           'tetris-yellow': '#FFF000',
           'tetris-blue-sky': '#00F5FF',
           'tetris-red': '#FF0000',
-          'tetris-hard-gray': '#0F0F0F'
+          'tetris-hard-gray': '#0F0F0F',
+          'tetris-shadow': '#424242'
       }
   },
   plugins: [],

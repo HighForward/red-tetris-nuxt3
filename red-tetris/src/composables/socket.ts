@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 
 export const connected = ref(false);
 
-const URL = "http://localhost:81";
+const URL = "http://localhost:8181";
 
 export const socket = io(URL, { autoConnect: true });
 

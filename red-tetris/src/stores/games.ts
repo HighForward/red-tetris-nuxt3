@@ -23,6 +23,8 @@ export interface IBoard {
     board: Array<Array<number>>
     current_piece?: IPiece
     old_piece?: IPiece
+    current_shadow_piece?: IPiece
+    old_shadow_piece?: IPiece
 }
 
 export interface IPiece {

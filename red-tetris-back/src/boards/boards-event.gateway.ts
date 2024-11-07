@@ -1,5 +1,4 @@
 import { SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
 import { BoardsService } from "./boards.service";
 import { UseGuards } from "@nestjs/common";
 import { WsGuard } from "../guards/ws.guard";
@@ -7,6 +6,7 @@ import { WsUser } from "../decorators/ws.user";
 import { WsData } from "../decorators/ws-data.decorator";
 import Player from "../players/player";
 import { BoardDTO } from "./board";
+require('dotenv').config()
 
 @UseGuards(WsGuard)
 @WebSocketGateway(Number(process.env.WS_PORT || 81),

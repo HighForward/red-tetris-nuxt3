@@ -1,12 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+require('dotenv').config()
 
 const PORT = process.env.PORT
-const WS_PORT = process.env.WS_PORT || 81
+const WS_PORT = process.env.WS_PORT
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
-      logger: ['log']
+      logger: ['log'],
   });
     app.enableCors();
     // app.useGlobalFilters(new WsAllExceptionsFilter())

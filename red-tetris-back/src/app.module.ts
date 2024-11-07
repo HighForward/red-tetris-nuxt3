@@ -9,7 +9,9 @@ import { PiecesModule } from './pieces/pieces.module';
 import { ConfigModule } from "@nestjs/config";
 
 @Module({
-  imports: [EventsModule, PlayersModule, ScheduleModule.forRoot(), GamesModule, PiecesModule, ConfigModule.forRoot()],
+  imports: [ConfigModule.forRoot({
+    isGlobal: true
+  }), EventsModule, PlayersModule, ScheduleModule.forRoot(), GamesModule, PiecesModule],
   controllers: [AppController],
   providers: [AppService],
 })

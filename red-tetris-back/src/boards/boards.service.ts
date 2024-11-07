@@ -36,7 +36,23 @@ export class BoardsService {
         if (removed_row?.length)
             this.emitRemoveRows(game, board, removed_row)
 
+        this.emitShadowPieceUpdate(board, insert)
         this.emitPieceUpdate(game, board, insert)
+    }
+
+    emitShadowPieceUpdate(board: Board, set_to_board: boolean = false) {
+        const tmpPiece: Piece = board.current_piece.clone()
+        tmpPiece.color = 10
+
+        while (tmpPiece.getBoundsVertical(board.board)) {
+            tmpPiece.y++
+        }
+
+        board.player.socket.emit("updateShadowPiece", {
+            player_id: board.player.id,
+            piece: tmpPiece.toDTO(),
+            set_to_board: set_to_board
+        })
     }
 
     boardStartInterval(game: Game, board: Board) {
@@ -89,6 +105,7 @@ export class BoardsService {
         const game = player.currentGame
         if (board && board.isBoardStarted()) {
             board.current_piece.rotateTetris(board.board)
+            this.emitShadowPieceUpdate(board)
             this.emitPieceUpdate(game, board)
         }
     }
@@ -99,6 +116,7 @@ export class BoardsService {
         const game = user.currentGame
         if (board && board.isBoardStarted()) {
             board.current_piece.translate(value, board.board)
+            this.emitShadowPieceUpdate(board)
             this.emitPieceUpdate(game, board)
         }
     }

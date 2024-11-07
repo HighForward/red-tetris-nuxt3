@@ -14,6 +14,7 @@ import { WsAllExceptionsFilter } from "../filters/ws-all-exception.filter";
 import Player, { UserType } from "../players/player";
 import { PlayersService } from "../players/players.service";
 import { GamesService } from "../games/games.service";
+require('dotenv').config()
 
 @WebSocketGateway(Number(process.env.WS_PORT || 81),
 { cors: '*:*' }

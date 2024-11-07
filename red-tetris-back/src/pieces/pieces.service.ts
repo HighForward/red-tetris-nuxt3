@@ -7,7 +7,7 @@ export class PiecesService {
     generatePiecesPattern() : Piece[] {
         let pieces: Piece[] = []
 
-        for (let i = 0; i < 200; i++) {
+        for (let i = 0; i < 400; i++) {
             pieces.push(new Piece())
         }
         return pieces
