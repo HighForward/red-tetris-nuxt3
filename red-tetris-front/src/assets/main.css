@@ -1,0 +1,19 @@
+@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  margin: 0 auto;
+  font-weight: normal;
+    /*height: 100vh;*/
+  /*max-width: 1280px;*/
+}
+
+
+.title__gradient {
+    background: #004EFF;
+    background: linear-gradient(to right, #004EFF 0%, #15BF26 25%, #FFF000 50%, #FF0000 75%, #7E00AD 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

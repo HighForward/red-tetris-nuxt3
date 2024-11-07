@@ -32,12 +32,21 @@ export class BoardsService {
         }
     }
 
+    emitNextPiece(board: Board) {
+        if (board.current_piece) {
+            const pieceNextIndex: number = board.piece_index === board.pieces_pattern.length - 1 ? 0 : board.piece_index
+            const nextPiece = board.pieces_pattern[pieceNextIndex]
+            board.player.socket.emit('nextPiece', nextPiece)
+        }
+    }
+
     emitBoardChanges(insert: boolean, removed_row: number[], board: Board, game: Game) {
         if (removed_row?.length)
             this.emitRemoveRows(game, board, removed_row)
 
         this.emitShadowPieceUpdate(board, insert)
         this.emitPieceUpdate(game, board, insert)
+        this.emitNextPiece(board)
     }
 
     emitShadowPieceUpdate(board: Board, set_to_board: boolean = false) {
